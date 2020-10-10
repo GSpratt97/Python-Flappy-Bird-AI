@@ -1,16 +1,14 @@
-import sys
-print (sys.path)
-
 import pygame
 import neat
 import time
 import os
 import random
 
-WIN_WIDTH = 600
+
+WIN_WIDTH = 500
 WIN_HEIGHT = 800
 
-BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png")))]
+BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png")))]
 PIPE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))
 BASE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "base.png")))
 BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
@@ -62,12 +60,12 @@ class Bird:
         if self.img_count < self.ANIMATION_TIME:
             self.img = self.IMGS[0]
         elif self.img_count < self.ANIMATION_TIME*2:
-            self.img = self.IMGS[1]
+            self.img = self.IMGS[0]
         elif self.img_count < self.ANIMATION_TIME*3:
-            self.img = self.IMGS[2]
+            self.img = self.IMGS[1]
         elif self.img_count < self.ANIMATION_TIME*4:
             self.img = self.IMGS[1]
-        elif self.img_count < self.ANIMATION_TIME*4 + 1:
+        elif self.img_count == self.ANIMATION_TIME*4 + 1:
             self.img = self.IMGS[0]
             self.img_count = 0
 
@@ -82,6 +80,8 @@ class Bird:
     def get_mask(self):
         return pygame.mask.from_surface(self.img)
 
+
+
 def draw_window(win, bird):
     win.blit(BG_IMG, (0,0))
     bird.draw(win)
@@ -90,13 +90,15 @@ def draw_window(win, bird):
 def main():
     bird = Bird(200,200)
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+    clock = pygame.time.Clock()
 
     run = True
     while run:
+        clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
+        bird.move()
         draw_window(win, bird)
 
     pygame.quit()
